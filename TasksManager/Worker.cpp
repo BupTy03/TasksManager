@@ -23,6 +23,40 @@ Worker::Worker()
 	)
 {}
 
+Worker::Worker(const Worker& other)
+{
+	std::unique_lock<std::mutex> lk(this->mtx_);
+	std::unique_lock<std::mutex> lk2(other.mtx_);
+	this->tasks_ = other.tasks_;
+}
+Worker& Worker::operator=(const Worker& other)
+{
+	if (this == &other) {
+		return *this;
+	}
+	std::unique_lock<std::mutex> lk(this->mtx_);
+	std::unique_lock<std::mutex> lk2(other.mtx_);
+	this->tasks_ = other.tasks_;
+	return *this;
+}
+
+Worker::Worker(Worker&& other) noexcept
+{
+	std::unique_lock<std::mutex> lk(this->mtx_);
+	std::unique_lock<std::mutex> lk2(other.mtx_);
+	std::swap(this->tasks_, other.tasks_);
+}
+Worker& Worker::operator=(Worker&& other) noexcept
+{
+	if (this == &other) {
+		return *this;
+	}
+	std::unique_lock<std::mutex> lk(this->mtx_);
+	std::unique_lock<std::mutex> lk2(other.mtx_);
+	std::swap(this->tasks_, other.tasks_);
+	return *this;
+}
+
 Worker::~Worker()
 {
 	{
@@ -51,4 +85,31 @@ void Worker::addTask(std::function<void()> f)
 std::size_t Worker::countTasks() const
 {
 	return tasks_.size();
+}
+
+bool operator==(const Worker& first, const Worker& second)
+{
+	return first.tasks_.size() == second.tasks_.size();
+}
+bool operator!=(const Worker& first, const Worker& second)
+{
+	return first.tasks_.size() != second.tasks_.size();
+}
+
+bool operator>(const Worker& first, const Worker& second)
+{
+	return first.tasks_.size() > second.tasks_.size();
+}
+bool operator<(const Worker& first, const Worker& second)
+{
+	return first.tasks_.size() < second.tasks_.size();
+}
+
+bool operator>=(const Worker& first, const Worker& second)
+{
+	return first.tasks_.size() >= second.tasks_.size();
+}
+bool operator<=(const Worker& first, const Worker& second)
+{
+	return first.tasks_.size() <= second.tasks_.size();
 }

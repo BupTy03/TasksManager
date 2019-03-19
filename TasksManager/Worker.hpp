@@ -13,12 +13,27 @@ struct Worker
 	Worker();
 	virtual ~Worker();
 
+	Worker(const Worker& other);
+	Worker& operator=(const Worker& other);
+
+	Worker(Worker&& other) noexcept;
+	Worker& operator=(Worker&& other) noexcept;
+
 	void addTask(std::function<void()>);
 	std::size_t countTasks() const;
 
+	friend bool operator==(const Worker& first, const Worker& second);
+	friend bool operator!=(const Worker& first, const Worker& second);
+
+	friend bool operator>(const Worker& first, const Worker& second);
+	friend bool operator<(const Worker& first, const Worker& second);
+
+	friend bool operator>=(const Worker& first, const Worker& second);
+	friend bool operator<=(const Worker& first, const Worker& second);
+
 private:
 	std::queue<std::function<void()>> tasks_;
-	std::mutex mtx_;
+	mutable std::mutex mtx_;
 	std::condition_variable cv_;
 	bool stopped_{ false };
 	std::thread thread_;

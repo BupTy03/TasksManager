@@ -1,26 +1,26 @@
-#include "Worker.hpp"
+#include "TasksManager.hpp"
 
 #include <iostream>
 #include <chrono>
 
 int main(int argc, char* argv[])
 {
-	Worker w;
+	TasksManager tm(4);
 
-	w.addTask([]() {
-		for (int i = 0; i < 10; ++i) {
+	tm.addTask([]() {
+		for (int i = 0; i < 1000; ++i) {
 			std::cout << "Hello\n";
 		}
 	});
 
-	w.addTask([]() {
-		for (int i = 0; i < 10; ++i) {
+	tm.addTask([]() {
+		for (int i = 0; i < 100; ++i) {
 			std::cout << "world!\n";
 		}
 	});
 
 	using namespace std::chrono_literals;
-	std::this_thread::sleep_for(10s);
+	std::this_thread::sleep_for(100s);
 
 	return 0;
 }

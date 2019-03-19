@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TasksManager.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
